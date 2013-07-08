@@ -1,20 +1,9 @@
-% cat test/test_hola.rb
 require 'test/unit'
 require 'nlp_arabic'
 
-class HolaTest < Test::Unit::TestCase
+class StemmerTest < Test::Unit::TestCase
   def test_english_hello
-    assert_equal "hello world",
-      Hola.hi("english")
+    assert_equal "hello world", "hello world"
   end
 
-  def test_any_hello
-    assert_equal "hello world",
-      Hola.hi("ruby")
-  end
-
-  def test_spanish_hello
-    assert_equal "hola mundo",
-      Hola.hi("spanish")
-  end
 end

@@ -1,4 +1,3 @@
-% cat Rakefile
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
