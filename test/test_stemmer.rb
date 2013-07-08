@@ -1,6 +1,6 @@
 % cat test/test_hola.rb
 require 'test/unit'
-require 'hola'
+require 'nlp_arabic'
 
 class HolaTest < Test::Unit::TestCase
   def test_english_hello
