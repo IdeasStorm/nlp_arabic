@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name        = 'nlp-arabic'
+  s.name        = 'nlp_arabic'
   s.version     = '0.0.1'
   s.date        = '2013-07-08'
   s.summary     = "Arabic Language processing tools"
@@ -8,5 +8,5 @@ Gem::Specification.new do |s|
   s.email       = 'mhdsyrwan@gmail.com'
   s.files       = ["lib/arabic_stemmer.rb"]
   s.homepage    =
-    'http://rubygems.org/gems/nlp-arabic'
+    'http://rubygems.org/gems/nlp_arabic'
 end
