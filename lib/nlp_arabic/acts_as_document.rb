@@ -180,9 +180,54 @@ module NlpArabic
         return sum / (l1 * l2)
       end
 
+      def similarity_with_doc (doc_id)
+        #TODO !!
+        doc2 = self.class.find(doc_id)
+        w1 = self.weights
+        w2 = doc2.weights
+        return self.sim(w1, w2)
+      end
 
-      def get_related_documents
-        #Todo add logic here
+      def self.similarity (query,num=0,synonyms=true)
+        sims = {}
+        syn_hash = {}
+        terms_q = self.get_root_words(query.split) #return array
+        if synonyms
+          terms_q.each do |t|
+            syns = ArabicStemmer.get_instance.get_synonyms(t)
+            if !syns.nil?
+              syn_hash.merge!(syns)
+            end
+          end
+          terms_q << syn_hash.keys
+          terms_q = terms_q.join(" ").split.uniq
+        end
+        tf_q = self.calculate_term_frequencies(terms_q)
+        w_q = self.weights(tf_q,syn_hash)
+        #TODO !!
+        docs = self.class.all
+        docs.each do |doc|
+          temp = self.sim(w_q, doc.weights)
+          if temp > 0
+            sims[doc] = temp
+          end
+        end
+        return Hash[sims.sort_by{|k, v| v}.reverse].first ((num ==0)? sims.count : num)
+      end
+
+      def get_related_documents(num=5)
+        res = {}
+        #TODO !!!
+        docs = self.class.where(self.class.arel_table[:id].not_eq(self.id))
+        w = self.weights
+        docs.each do |doc|
+          doc_weights = doc.weights
+          temp = self.sim(w, doc_weights)
+          if temp > 0
+            res[doc] = temp
+          end
+        end
+        return Hash[res.sort_by{|k, v| v}.reverse].first num
       end
 
     end
