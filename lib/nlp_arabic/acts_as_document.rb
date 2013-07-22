@@ -3,6 +3,8 @@ module NlpArabic
     extend ActiveSupport::Concern
 
     @@registered_classes = Array.new
+    #TODO check it
+    after_save :add_document
 
     module ClassMethods
       def acts_as_document(options={})
@@ -14,6 +16,18 @@ module NlpArabic
     end
 
     module LocalInstanceMethods
+
+      def add_document
+        words = self.acts_as_document_field.split
+        all_terms = self.get_root_words(words)
+        #if self.has_attributes?('root_terms')
+        if respond_to?('root_terms')
+          self.update_attributes(:root_terms => all_terms.join(" "))
+        end
+        terms_freq = self.calculate_term_frequencies(all_terms)
+        save_tf (terms_freq)
+        save_term(all_terms)
+      end
 
       def self.get_root_words (words)
         all_terms = []
@@ -119,8 +133,7 @@ module NlpArabic
       def weights
         w = {}
         tf = self.term_frequencies
-        #TODO get count of all docs
-        docs_count = self.count
+        docs_count = self.class.count
         df = self.document_freq_of_terms
         tf.each_pair { |term,freq|
           w[term] = (freq *  Math.log(docs_count.to_f / (1+ df[term]) ))
@@ -131,9 +144,7 @@ module NlpArabic
 
       def self.weights (tf,syn_hash=nil)
         w = {}
-        #TODO get count of all docs
-        docs_count = self.count
-
+        docs_count = self.class.count
         df = self.document_freq_of_terms(tf.keys)
         tf.each_pair { |term,freq|
           w[term] = (freq *  Math.log(docs_count.to_f / (1+ df[term]) ))
