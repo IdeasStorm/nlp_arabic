@@ -20,7 +20,8 @@ class ArabicWordnet
   def self.get_synonyms(word, root)
     words = Array.new
     result = Array.new
-    db = Sequel.connect('sqlite://db/ArabicWordnet.sqlite')
+
+    db = Sequel.sqlite("#{Rails.root}/db/ArabicWordnet.sqlite")
 
     # If the input word is a root
     if (root)
@@ -76,7 +77,7 @@ class ArabicWordnet
     words = Array.new
     result = Array.new
 
-    db = Sequel.connect('sqlite://db/ArabicWordnet.sqlite')
+    db = Sequel.sqlite("#{Rails.root}/db/ArabicWordnet.sqlite"
 
     # If the input word is a root
     if (root)
