@@ -38,6 +38,27 @@ ensure
   $stdout.sync = oldsync
 end
 
+### Extract the contents of the specified +zipfile+ into the given +targetdir+.
+def unzip( zipfile, targetdir, *files )
+  require 'zip/zip'
+  require 'pathname'
+  targetdir = Pathname( targetdir )
+  raise "No such directory: #{targetdir}" unless targetdir.directory?
+
+  Zip::ZipFile.foreach( zipfile ) do |entry|
+    # $stderr.puts "  entry is: %p, looking for: %p" % [ entry.name, files ]
+    next unless files.empty? || files.include?( entry.name )
+    target_path = targetdir + entry.name
+    $stderr.puts "  extracting: %s" % [ target_path ]
+    entry.extract( target_path ) { true }
+    files.delete( entry.name )
+    break if files.empty?
+  end
+
+  raise "Couldn't unzip: %p: not found in %s" % [ files, zipfile ] unless files.empty?
+end
+
 task :download_db do
   download ZIP_ArWN_URL, ZIP_LOC
+  unzip ZIP_LOC, UNZIP_LOC, UNZIP_FILE_NAME
 end
