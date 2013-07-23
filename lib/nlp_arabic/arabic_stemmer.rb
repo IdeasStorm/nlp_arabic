@@ -370,7 +370,7 @@ class ArabicStemmer
 
   def format_sentence(sentence)
     result = sentence.split.map do |word|
-      res = format_word(word)
+      res = format_word(word)[:pure_word]
     end
     result.join ' '
   end

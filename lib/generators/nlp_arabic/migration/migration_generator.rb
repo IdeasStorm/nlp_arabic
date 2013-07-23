@@ -1,7 +1,7 @@
 require 'rails/generators'
 require 'rails/generators/migration'
 
-module Documentize
+module NlpArabic
   class MigrationGenerator < Rails::Generators::Base
     include Rails::Generators::Migration
 
@@ -35,4 +35,5 @@ module Documentize
       end
     end
   end
+
 end
