@@ -1,3 +1,4 @@
+
 ZIP_ArWN_URL = "http://media.ideasstorm.net/ArabicWordnetDB/ArabicWordnet.zip"
 ZIP_LOC = "../../db/ArabicWordnet.zip"
 
@@ -56,9 +57,11 @@ def unzip( zipfile, targetdir, *files )
   raise "Couldn't unzip: %p: not found in %s" % [ files, zipfile ] unless files.empty?
 end
 
+
 namespace :db do
+
   desc "Download Arabic Wordnet DB"
-  task :download => :environment do
+  task :download do
     download ZIP_ArWN_URL, ZIP_LOC
     unzip ZIP_LOC, UNZIP_LOC, UNZIP_FILE_NAME
   end
