@@ -12,7 +12,16 @@ module NlpArabic
         self.acts_as_document_field = options[:on] || :title
         ActsAsDocument.register_class self.class
         include ActsAsDocument::LocalInstanceMethods
+        extend ActsAsDocument::DocumentClassMethods
       end
+    end
+
+    module DocumentClassMethods
+      def doit
+        puts 'worked'
+      end
+
+      #TODO put class methods here
     end
 
     module LocalInstanceMethods
