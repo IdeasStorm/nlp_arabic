@@ -18,14 +18,15 @@ module NlpArabic
     module LocalInstanceMethods
 
       def add_document
-        words = self.acts_as_document_field.split
-        all_terms = self.get_root_words(words)
+        words = read_attribute(self.class.acts_as_document_field)
+        words = words.split
+        all_terms = LocalInstanceMethods::get_root_words(words)
         #if self.has_attributes?('root_terms')
         #if self.class.exist?('root_terms')
         if respond_to?('root_terms')
           self.write_attributes(:root_terms => all_terms.join(" "))
         end
-        terms_freq = self.calculate_term_frequencies(all_terms)
+        terms_freq = LocalInstanceMethods::calculate_term_frequencies(all_terms)
         save_tf (terms_freq)
         save_term(all_terms)
       end
