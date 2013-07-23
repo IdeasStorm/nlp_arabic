@@ -1,8 +1,7 @@
-
 ZIP_ArWN_URL = "http://media.ideasstorm.net/ArabicWordnetDB/ArabicWordnet.zip"
-ZIP_LOC = "../../db/ArabicWordnet.zip"
+ZIP_LOC = "db/ArabicWordnet.zip"
 
-UNZIP_LOC = "../../db"
+UNZIP_LOC = "db/"
 UNZIP_FILE_NAME = "ArabicWordnet.sqlite"
 
 ###############################################
@@ -45,7 +44,7 @@ def unzip( zipfile, targetdir, *files )
   raise "No such directory: #{targetdir}" unless targetdir.directory?
 
   Zip::ZipFile.foreach( zipfile ) do |entry|
-    # $stderr.puts "  entry is: %p, looking for: %p" % [ entry.name, files ]
+    $stderr.puts "  entry is: %p, looking for: %p" % [ entry.name, files ]
     next unless files.empty? || files.include?( entry.name )
     target_path = targetdir + entry.name
     $stderr.puts "  extracting: %s" % [ target_path ]
