@@ -4,7 +4,7 @@ module NlpArabic
 
     @@registered_classes = Array.new
     #TODO check it
-    after_save :add_document
+    #after_save :add_document
 
     module ClassMethods
       def acts_as_document(options={})
@@ -21,8 +21,9 @@ module NlpArabic
         words = self.acts_as_document_field.split
         all_terms = self.get_root_words(words)
         #if self.has_attributes?('root_terms')
+        #if self.class.exist?('root_terms')
         if respond_to?('root_terms')
-          self.update_attributes(:root_terms => all_terms.join(" "))
+          self.write_attributes(:root_terms => all_terms.join(" "))
         end
         terms_freq = self.calculate_term_frequencies(all_terms)
         save_tf (terms_freq)
@@ -180,9 +181,7 @@ module NlpArabic
         return sum / (l1 * l2)
       end
 
-      def similarity_with_doc (doc_id)
-        #TODO !!
-        doc2 = self.class.find(doc_id)
+      def similarity_with_doc (doc2)
         w1 = self.weights
         w2 = doc2.weights
         return self.sim(w1, w2)
