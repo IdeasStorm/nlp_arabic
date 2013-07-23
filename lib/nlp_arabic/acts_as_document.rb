@@ -10,8 +10,8 @@ module NlpArabic
       def acts_as_document(options={})
         cattr_accessor :acts_as_document_field
         self.acts_as_document_field = options[:on] || :title
-        Documentize::ActsAsDocument.register_class self.class
-        include Documentize::ActsAsDocument::LocalInstanceMethods
+        ActsAsDocument.register_class self.class
+        include ActsAsDocument::LocalInstanceMethods
       end
     end
 
@@ -240,3 +240,4 @@ module NlpArabic
     end
   end
 end
+ActiveRecord::Base.send :include, NlpArabic::ActsAsDocument
