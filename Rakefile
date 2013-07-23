@@ -27,6 +27,10 @@ Bundler::GemHelper.install_tasks
 
 require 'rake/testtask'
 
+Dir[File.join(File.dirname(__FILE__),'lib/tasks/*.rake')].each do |f|
+  load f
+end
+
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
   t.libs << 'test'
