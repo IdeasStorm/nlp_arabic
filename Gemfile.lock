@@ -88,6 +88,7 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.37)
+    zip (2.0.2)
 
 PLATFORMS
   ruby
@@ -97,3 +98,4 @@ DEPENDENCIES
   nlp_arabic!
   sequel
   sqlite3
+  zip
