@@ -1,3 +1,4 @@
+# encoding: UTF-8
 ZIP_ArWN_URL = "http://media.ideasstorm.net/ArabicWordnetDB/ArabicWordnet.zip"
 ZIP_LOC = "db/ArabicWordnet.zip"
 
