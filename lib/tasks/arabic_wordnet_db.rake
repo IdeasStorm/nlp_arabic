@@ -47,7 +47,7 @@ namespace :db do
     raise "No such directory: #{targetdir}" unless targetdir.directory?
   
     Zip::ZipFile.foreach( zipfile ) do |entry|
-      # $stderr.puts "  entry is: %p, looking for: %p" % [ entry.name, files ]
+      $stderr.puts "  entry is: %p, looking for: %p" % [ entry.name, files ]
       next unless files.empty? || files.include?( entry.name )
       target_path = targetdir + entry.name
       $stderr.puts "  extracting: %s" % [ target_path ]
