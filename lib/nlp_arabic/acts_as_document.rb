@@ -20,7 +20,7 @@ module NlpArabic
       def doit
         puts 'worked'
       end
-
+      public
       def get_root_words (words)
         all_terms = []
         words.each do |w|
@@ -78,7 +78,7 @@ module NlpArabic
 
       def weights (tf,syn_hash=nil)
         w = {}
-        docs_count = self.class.count
+        docs_count = self.count
         df = self.document_freq_of_terms(tf.keys)
         tf.each_pair { |term,freq|
           w[term] = (freq *  Math.log(docs_count.to_f / (1+ df[term]) ))
@@ -91,7 +91,7 @@ module NlpArabic
         return w
       end
 
-      private
+
       def lenght_vector (weights)
         lenght = 0
         weights.each_pair { |t,w|
@@ -100,7 +100,7 @@ module NlpArabic
         return Math.sqrt(lenght)
       end
 
-      private
+
       def sim (v1, v2)
         sum = 0
         v1.each_pair { |t,w|
@@ -131,7 +131,7 @@ module NlpArabic
         tf_q = self.calculate_term_frequencies(terms_q)
         w_q = self.weights(tf_q,syn_hash)
                                                    #TODO !!
-        docs = self.class.all
+        docs = self.all
         docs.each do |doc|
           temp = self.sim(w_q, doc.weights)
           if temp > 0
@@ -157,7 +157,7 @@ module NlpArabic
         save_terms(all_terms)
       end
 
-      private
+
       def save_terms(terms)
         terms.uniq.each do |t|
           term = Term.find_by_word(t)
@@ -169,7 +169,7 @@ module NlpArabic
         end
       end
 
-      private
+
       def save_tf (hash_freq)
         hash_freq.each_pair {| term, freq |
           FreqTermInDoc.create(:doc_id => self.id, :word => term, :freq => freq)
@@ -187,7 +187,7 @@ module NlpArabic
 
       #To get row terms of this document from Term table
       def terms
-        terms = Term.joins('LEFT OUTER JOIN freq_term_in_docs ON freq_term_in_docs.word = terms.word AND freq_term_in_docs.doc_id = self.id')
+        terms = Term.joins("LEFT OUTER JOIN freq_term_in_docs ON freq_term_in_docs.word = terms.word AND freq_term_in_docs.doc_id = #{self.id}")
 #SELECT terms.* FROM terms
 #  INNER JOIN freq_term_in_docs On freq_term_in_docs.word = terms.word
 #  INNER JOIN transactions On freq_term_in_docs.doc_id = 1
@@ -202,6 +202,7 @@ module NlpArabic
         return df
       end
 
+      public
       def weights
         w = {}
         tf = self.term_frequencies
@@ -215,14 +216,15 @@ module NlpArabic
       end
 
 
+      public
       def similarity_with_doc (doc2)
         w1 = self.weights
         w2 = doc2.weights
-        return self.sim(w1, w2)
+        return self.class.sim(w1, w2)
       end
 
 
-
+      public
       def get_related_documents(num=5)
         res = {}
         #TODO !!!
@@ -230,7 +232,7 @@ module NlpArabic
         w = self.weights
         docs.each do |doc|
           doc_weights = doc.weights
-          temp = self.sim(w, doc_weights)
+          temp = self.class.sim(w, doc_weights)
           if temp > 0
             res[doc] = temp
           end
