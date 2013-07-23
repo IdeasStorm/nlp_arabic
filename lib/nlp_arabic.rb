@@ -5,4 +5,5 @@ require 'nlp_arabic/freq_term_in_doc'
 require 'nlp_arabic/term'
 
 module NlpArabic
+  require 'railtie' if defined?(Rails)
 end
