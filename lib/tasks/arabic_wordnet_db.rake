@@ -1,8 +1,8 @@
 # encoding: UTF-8
 ZIP_ArWN_URL = "http://media.ideasstorm.net/ArabicWordnetDB/ArabicWordnet.zip"
-ZIP_LOC = "db/ArabicWordnet.zip"
+ZIP_LOC = "#{Rails.root}/db/ArabicWordnet.zip"
 
-UNZIP_LOC = "db/"
+UNZIP_LOC = "#{Rails.root}/db/"
 UNZIP_FILE_NAME = "ArabicWordnet.sqlite"
 
 ###############################################
