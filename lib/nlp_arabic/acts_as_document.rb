@@ -3,8 +3,6 @@ module NlpArabic
     extend ActiveSupport::Concern
 
     @@registered_classes = Array.new
-    #TODO check it
-
 
     module ClassMethods
       def acts_as_document(options={})
@@ -17,10 +15,8 @@ module NlpArabic
     end
 
     module DocumentClassMethods
-      def doit
-        puts 'worked'
-      end
-      public
+
+      #TO get root of words in arabic from db or WordNetArabic
       def get_root_words (words)
         all_terms = []
         words.each do |w|
@@ -29,6 +25,7 @@ module NlpArabic
             all_terms << term
           end
         end
+        #To save root of words in db for improve performance
         #  	word.each do |w|
         #  		temp = RootTerms.find(w)
         #  		if temp.nil?
@@ -44,6 +41,7 @@ module NlpArabic
         return all_terms.uniq
       end
 
+      #To calculate tf (or term frequency of words) >> tf_w = f_w / max {f_w}
       def calculate_term_frequencies(terms)
         tf = {}
         max_frequency_of_terms = 0
@@ -62,7 +60,7 @@ module NlpArabic
         return tf
       end
 
-      #To used it for query
+      #To get df (or document frequency) of terms in all documents
       def document_freq_of_terms(terms)
         df = {}
         terms.uniq.each do |t|
@@ -76,6 +74,7 @@ module NlpArabic
         return df
       end
 
+      #To calculate weights vector of query
       def weights (tf,syn_hash=nil)
         w = {}
         docs_count = self.count
@@ -91,7 +90,7 @@ module NlpArabic
         return w
       end
 
-
+      #To get lenght vector of weights >> |w|
       def lenght_vector (weights)
         lenght = 0
         weights.each_pair { |t,w|
@@ -100,7 +99,7 @@ module NlpArabic
         return Math.sqrt(lenght)
       end
 
-
+      #To find  similarity between tow vector >> sim(v1,v2) = sum {v1[t]*v2[t]} / |v1|*|v2|
       def sim (v1, v2)
         sum = 0
         v1.each_pair { |t,w|
@@ -114,6 +113,7 @@ module NlpArabic
         return sum / (l1 * l2)
       end
 
+      #To
       def similarity (query,num=0,synonyms=true)
         sims = {}
         syn_hash = {}
