@@ -377,7 +377,7 @@ class ArabicStemmer
 
   def get_synonyms(word)
     word_result = format_word(word)
-    results = ArabicWordNet.get_synonyms(word_result[:pure_word],false)
+    results = ArabicWordnet.get_synonyms(word_result[:pure_word],false)
     if (results.count > 0)
       synonyms = Hash.new
       results.delete word_result[:pure_word]
@@ -391,7 +391,7 @@ class ArabicStemmer
       end
       return synonyms
     else
-      results = ArabicWordNet.get_synonyms(word_result[:result], true)
+      results = ArabicWordnet.get_synonyms(word_result[:result], true)
       if (results.count > 0)
         synonyms = Hash.new
         results.delete word_result[:pure_word]
