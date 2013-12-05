@@ -172,7 +172,7 @@ module NlpArabic
       def save_tf (hash_freq)
         all_words = FreqTermInDoc.where(:doc_id => self.id)
         hash_freq.each_pair {| term, freq |
-          temp = all_words.where(:word => term)
+          temp = all_words.where(:word => term).first
           word = Term.find_by_word(term)
           if !temp.nil?
             if temp.freq != freq
