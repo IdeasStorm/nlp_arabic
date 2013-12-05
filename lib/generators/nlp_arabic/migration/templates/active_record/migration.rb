@@ -16,8 +16,10 @@ class ActsAsDocumentMigration < ActiveRecord::Migration
 
       t.timestamps
     end
+    #NlpArabic::ActsAsDocument.registered_classes.each do |c|
+      #add_column c.to_sym,  :root_terms, :string
+    #end
   end
-
 
   def self.down
     drop_table :terms

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130723200718) do
+ActiveRecord::Schema.define(:version => 20131204202208) do
 
   create_table "freq_term_in_docs", :force => true do |t|
     t.integer  "doc_id"

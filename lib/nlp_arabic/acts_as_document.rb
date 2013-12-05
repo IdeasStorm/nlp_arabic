@@ -8,7 +8,7 @@ module NlpArabic
       def acts_as_document(options={})
         cattr_accessor :acts_as_document_field
         self.acts_as_document_field = options[:on] || :title
-        ActsAsDocument.register_class self.class
+        ActsAsDocument.register_class self.name
         include ActsAsDocument::LocalInstanceMethods
         extend ActsAsDocument::DocumentClassMethods
       end
@@ -130,7 +130,7 @@ module NlpArabic
         end
         tf_q = self.calculate_term_frequencies(terms_q)
         w_q = self.weights(tf_q,syn_hash)
-                                                   #TODO !!
+        #TODO !!
         docs = self.all
         docs.each do |doc|
           temp = self.sim(w_q, doc.weights)
@@ -154,25 +154,40 @@ module NlpArabic
         end
         terms_freq = self.class.calculate_term_frequencies(all_terms)
         save_tf (terms_freq)
-        save_terms(all_terms)
       end
 
 
-      def save_terms(terms)
-        terms.uniq.each do |t|
-          term = Term.find_by_word(t)
-          if term.nil?
-            Term.create(:word => t, :doc_freq => 1)
-          else
-            term.update_attributes(:doc_freq => term.doc_freq+1)
-          end
-        end
-      end
+#     def save_terms(terms)
+#        terms.uniq.each do |t|
+#          term = Term.find_by_word(t)
+#          if term.nil?
+#            Term.create(:word => t, :doc_freq => 1)
+#          else
+#            term.update_attributes(:doc_freq => term.doc_freq+1)
+#          end
+#        end
+#      end
 
 
       def save_tf (hash_freq)
+        all_words = FreqTermInDoc.where(:doc_id => self.id)
         hash_freq.each_pair {| term, freq |
-          FreqTermInDoc.create(:doc_id => self.id, :word => term, :freq => freq)
+          temp = all_words.where(:word => term)
+          word = Term.find_by_word(term)
+          if !temp.nil?
+            if temp.freq != freq
+              term_freq = word.doc_freq - temp.freq + freq 
+              word.update_attributes(:doc_freq => term_freq)
+              temp.update_attributes(:freq => freq)
+            end
+          else
+            FreqTermInDoc.create(:doc_id => self.id, :word => term, :freq => freq)
+            if word.nil?
+              Term.create(:word => term, :doc_freq => 1)
+            else
+              word.update_attributes(:doc_freq => word.doc_freq+1)
+            end
+          end
         }
       end
 
