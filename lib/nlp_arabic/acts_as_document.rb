@@ -151,7 +151,7 @@ module NlpArabic
         words = words.split
         all_terms = self.class.get_root_words(words)
         if respond_to?('root_terms')
-          self.update_attribute(:root_terms => all_terms.join(" "))
+          self.update_attributes(:root_terms => all_terms.join(" "))
         end
         terms_freq = self.class.calculate_term_frequencies(all_terms)
         save_tf (terms_freq)
