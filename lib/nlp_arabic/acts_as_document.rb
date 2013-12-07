@@ -114,7 +114,7 @@ module NlpArabic
       end
 
       #To
-      def similarity (query,num=0,synonyms=true)
+      def similarity (query,num=0,synonyms=true,docs=nil)
         sims = {}
         syn_hash = {}
         terms_q = self.get_root_words(query.split) #return array
@@ -130,8 +130,8 @@ module NlpArabic
         end
         tf_q = self.calculate_term_frequencies(terms_q)
         w_q = self.weights(tf_q,syn_hash)
-        #TODO !!
-        docs = self.all
+        
+        docs = self.all if docs.nil?
         docs.each do |doc|
           temp = self.sim(w_q, doc.weights)
           if temp > 0
@@ -151,7 +151,7 @@ module NlpArabic
         words = words.split
         all_terms = self.class.get_root_words(words)
         if respond_to?('root_terms')
-          self.write_attributes(:root_terms => all_terms.join(" "))
+          self.write_attribute(:root_terms, all_terms.join(" "))
         end
         terms_freq = self.class.calculate_term_frequencies(all_terms)
         save_tf (terms_freq)
