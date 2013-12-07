@@ -145,7 +145,7 @@ module NlpArabic
 
     module LocalInstanceMethods
 
-      attr_accessible :root_terms
+      #attr_accessible :root_terms
       def add_document
         delete_document
         words = read_attribute(self.class.acts_as_document_field)
