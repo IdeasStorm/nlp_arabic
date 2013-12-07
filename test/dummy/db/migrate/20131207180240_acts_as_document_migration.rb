@@ -8,6 +8,7 @@ class ActsAsDocumentMigration < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :terms, :word, :unique => true
 
     create_table :freq_term_in_docs do |t|
       t.integer :doc_id
@@ -16,9 +17,13 @@ class ActsAsDocumentMigration < ActiveRecord::Migration
 
       t.timestamps
     end
-    #NlpArabic::ActsAsDocument.registered_classes.each do |c|
-     # add_column c.downcase+"s",  :root_terms, :string
-    #end
+    add_index :freq_term_in_docs, [:doc_id, :word], :unique => true
+    
+    puts "***********************************************************"
+    puts NlpArabic::ActsAsDocument.registered_classes
+    NlpArabic::ActsAsDocument.registered_classes.each do |c|
+      add_column (c.downcase+"s").to_sym, :root_terms, :string
+    end
   end
 
   def self.down

@@ -212,12 +212,16 @@ module NlpArabic
         return tf
       end
 
+      def get_terms
+        return self.root_terms if respond_to?('root_terms')
+        self.terms 
+      end
       #To get row terms of this document from Term table
       def terms
         terms = Term.joins("LEFT OUTER JOIN freq_term_in_docs ON freq_term_in_docs.word = terms.word AND freq_term_in_docs.doc_id = #{self.id}")
-#SELECT terms.* FROM terms
-#  INNER JOIN freq_term_in_docs On freq_term_in_docs.word = terms.word
-#  INNER JOIN transactions On freq_term_in_docs.doc_id = 1
+        #SELECT terms.* FROM terms
+        #  INNER JOIN freq_term_in_docs On freq_term_in_docs.word = terms.word
+        #  INNER JOIN transactions On freq_term_in_docs.doc_id = 1
         return terms
       end
 
@@ -252,10 +256,12 @@ module NlpArabic
 
 
       public
-      def get_related_documents(num=5)
+      def get_related_documents(num=5,docs=nil)
         res = {}
         #TODO !!!
-        docs = self.class.where(self.class.arel_table[:id].not_eq(self.id))
+        if docs.nil?
+          docs = self.class.where(self.class.arel_table[:id].not_eq(self.id))
+        end
         w = self.weights
         docs.each do |doc|
           doc_weights = doc.weights

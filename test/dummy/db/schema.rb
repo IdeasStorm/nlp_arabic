@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131204202208) do
+ActiveRecord::Schema.define(:version => 20131207180240) do
 
   create_table "freq_term_in_docs", :force => true do |t|
     t.integer  "doc_id"
@@ -21,12 +21,16 @@ ActiveRecord::Schema.define(:version => 20131204202208) do
     t.datetime "updated_at", :null => false
   end
 
+  add_index "freq_term_in_docs", ["doc_id", "word"], :name => "index_freq_term_in_docs_on_doc_id_and_word", :unique => true
+
   create_table "terms", :force => true do |t|
     t.string   "word"
     t.integer  "doc_freq"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  add_index "terms", ["word"], :name => "index_terms_on_word", :unique => true
 
   create_table "transactions", :force => true do |t|
     t.string   "title"
