@@ -145,16 +145,18 @@ module NlpArabic
 
     module LocalInstanceMethods
 
+      attr_accessible :root_terms
       def add_document
         delete_document
         words = read_attribute(self.class.acts_as_document_field)
         words = words.split
         all_terms = self.class.get_root_words(words)
-        if respond_to?('root_terms')
-          self.update_attributes(:root_terms => all_terms.join(" "))
+
+        unless all_terms == self.root_terms
+          self.update_attributes(:root_terms => all_terms.join(" ")) if respond_to?('root_terms')
+          terms_freq = self.class.calculate_term_frequencies(all_terms)
+          save_tf (terms_freq)
         end
-        terms_freq = self.class.calculate_term_frequencies(all_terms)
-        save_tf (terms_freq)
       end
 
       #
