@@ -146,6 +146,7 @@ module NlpArabic
     module LocalInstanceMethods
 
       def add_document
+        delete_document
         words = read_attribute(self.class.acts_as_document_field)
         words = words.split
         all_terms = self.class.get_root_words(words)
@@ -156,22 +157,17 @@ module NlpArabic
         save_tf (terms_freq)
       end
 
-      #TODO testing 
+      #
       def delete_document
-        if respond_to?('root_terms')
-          all_terms = self.root_terms
-        else
-          words = read_attribute(self.class.acts_as_document_field)
-          words = words.split
-          all_terms = self.class.get_root_words(words)
+        doc = FreqTermInDoc.where(:doc_id => self.id)
+        unless doc.empty?
+          doc.each do |e|
+            word = Term.find_by_word(e.word)
+            new_freq = word.doc_freq - e.freq
+            word.update_attributes(:doc_freq => new_freq)
+            e.destroy
+          end
         end
-        terms_freq = self.term_frequencies
-        all_terms.each do |term|
-          word = Term.find_by_word(term)
-          new_freq = word.doc_freq - terms_freq[term]
-          word.update_attributes(:doc_freq => new_freq)
-        end
-        FreqTermInDoc.where(:doc_id => self.id).map { |e| e.destroy }
       end
 #     def save_terms(terms)
 #        terms.uniq.each do |t|
