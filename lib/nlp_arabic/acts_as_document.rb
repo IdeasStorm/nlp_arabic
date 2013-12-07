@@ -6,7 +6,7 @@ module NlpArabic
 
     module ClassMethods
       def acts_as_document(options={})
-        cattr_accessor :acts_as_document_field
+        cattr_accessor :acts_as_document_field,:root_terms
         self.acts_as_document_field = options[:on] || :title
         ActsAsDocument.register_class self.name
         include ActsAsDocument::LocalInstanceMethods
@@ -152,11 +152,12 @@ module NlpArabic
         words = words.split
         all_terms = self.class.get_root_words(words)
 
-        unless all_terms == self.root_terms
-          self.update_attributes(:root_terms => all_terms.join(" ")) if respond_to?('root_terms')
-          terms_freq = self.class.calculate_term_frequencies(all_terms)
-          save_tf (terms_freq)
+        if respond_to?('root_terms')
+          self.update_column(:root_terms, all_terms.join(" ")) 
         end
+        terms_freq = self.class.calculate_term_frequencies(all_terms)
+        save_tf (terms_freq)
+
       end
 
       #
@@ -181,7 +182,6 @@ module NlpArabic
 #          end
 #        end
 #      end
-
 
       def save_tf (hash_freq)
         all_words = FreqTermInDoc.where(:doc_id => self.id)

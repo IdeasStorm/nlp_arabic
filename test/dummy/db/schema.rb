@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131207180240) do
+ActiveRecord::Schema.define(:version => 20131207202826) do
 
   create_table "freq_term_in_docs", :force => true do |t|
     t.integer  "doc_id"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(:version => 20131207180240) do
     t.string   "title"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "root_terms"
   end
 
 end
