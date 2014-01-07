@@ -38,7 +38,7 @@ module NlpArabic
         #  		end
         #  		all_terms << r_w
         #  	end #for word.each do |w|
-        return all_terms.uniq
+        return all_terms
       end
 
       #To calculate tf (or term frequency of words) >> tf_w = f_w / max {f_w}
@@ -147,13 +147,13 @@ module NlpArabic
 
       #attr_accessible :root_terms
       def add_document
-        delete_document
+        #delete_document
         words = read_attribute(self.class.acts_as_document_field)
         words = words.split
         all_terms = self.class.get_root_words(words)
 
         if respond_to?('root_terms')
-          self.update_column(:root_terms, all_terms.join(" ")) 
+          self.update_column(:root_terms, all_terms.uniq.join(" ")) 
         end
         terms_freq = self.class.calculate_term_frequencies(all_terms)
         save_tf (terms_freq)
@@ -184,7 +184,12 @@ module NlpArabic
 #      end
 
       def save_tf (hash_freq)
+
+        puts "**************************************************************"
+        puts hash_freq
+
         all_words = FreqTermInDoc.where(:doc_id => self.id)
+        
         hash_freq.each_pair {| term, freq |
           temp = all_words.where(:word => term).first
           word = Term.find_by_word(term)
@@ -195,7 +200,9 @@ module NlpArabic
               temp.update_attributes(:freq => freq)
             end
           else
-            FreqTermInDoc.create(:doc_id => self.id, :word => term, :freq => freq)
+            puts "------------------------------------------------------------------"
+            puts freq
+            FreqTermInDoc.create(:doc_id => self.id, :word => term, :freq => freq.to_f)
             if word.nil?
               Term.create(:word => term, :doc_freq => 1)
             else
@@ -242,8 +249,8 @@ module NlpArabic
         docs_count = self.class.count
         df = self.document_freq_of_terms
         tf.each_pair { |term,freq|
-          w[term] = (freq *  Math.log(docs_count.to_f / (1+ df[term]) ))
-          #w[term] = (freq *  Math.log(docs_count.to_f / df[term] ))
+          #w[term] = (freq *  Math.log(docs_count.to_f / (1+ df[term]) ))
+          w[term] = (freq *  Math.log(docs_count.to_f / df[term] ))
         }
         return w
       end
