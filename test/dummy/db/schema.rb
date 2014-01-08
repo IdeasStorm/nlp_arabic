@@ -11,23 +11,31 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131207202826) do
+ActiveRecord::Schema.define(:version => 20140108153744) do
 
   create_table "freq_term_in_docs", :force => true do |t|
     t.integer  "doc_id"
     t.string   "word"
-    t.float    "freq"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.float    "freq",       :default => 0.0
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
   end
 
   add_index "freq_term_in_docs", ["doc_id", "word"], :name => "index_freq_term_in_docs_on_doc_id_and_word", :unique => true
 
+  create_table "rank_weights", :force => true do |t|
+    t.integer  "doc_id"
+    t.string   "word"
+    t.integer  "action_freq", :default => 0
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
   create_table "terms", :force => true do |t|
     t.string   "word"
-    t.integer  "doc_freq"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "doc_freq",   :default => 0
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   add_index "terms", ["word"], :name => "index_terms_on_word", :unique => true

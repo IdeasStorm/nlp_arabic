@@ -113,8 +113,8 @@ module NlpArabic
         return sum / (l1 * l2)
       end
 
-      #To
-      def similarity (query,num=0,synonyms=true,docs=nil)
+      # Similarity docs by query
+      def old_similarity (query,num=0,synonyms=true,docs=nil)
         sims = {}
         syn_hash = {}
         terms_q = self.get_root_words(query.split)
@@ -141,6 +141,60 @@ module NlpArabic
         return Hash[sims.sort_by{|k, v| v}.reverse].first ((num ==0)? sims.count : num)
       end
 
+      def similarity (query,doc,syn_hash)
+        tf_q = self.calculate_term_frequencies(query)
+        w_q = self.weights(tf_q,syn_hash)
+        
+        return self.sim(w_q, doc.weights)
+      end
+
+    # Similarity docs by query
+      def search_query (query,num=0,synonyms=true,docs=nil)
+        res = {}
+        syn_hash = {}
+        terms_q = self.get_root_words(query.split)
+
+        if synonyms
+          terms_q.each do |t|
+            syns = ArabicStemmer.get_instance.get_synonyms(t)
+            if !syns.nil?
+              syn_hash.merge!(syns)
+            end
+          end
+          terms_q << syn_hash.keys
+          terms_q = terms_q.join(" ").split.uniq
+        end
+
+        docs = self.all if docs.nil?
+        docs.each do |doc|
+          sim = similarity(terms_q,doc,syn_hash)     
+          rank = rank_docs(terms_q,doc)
+          res[doc] = sim + rank unless (sim+rank) == 0
+        end
+
+        return Hash[res.sort_by{|k, v| v}.reverse].first ((num ==0)? res.count : num)
+      end
+
+      # Rank docs by query
+      def rank_docs (words,doc)
+        count_action_words = {}
+
+        words.each do |w|
+          count_action = 0
+          RankWeight.where(:word => w).map { |e| count_action += e.action_freq }
+          count_action_words[w] = count_action
+        end
+        # To get all rank weights of all words
+        rank_words_doc = RankWeight.where(:doc_id => doc.id,:word => words)
+        weights = 0.0 # weights all words of this doc
+        words.each do |w|
+          temp = rank_words_doc.find_by_word(w)
+          # To get rank weight this word in this doc
+          weights += (temp.action_freq.to_f / count_action_words[w]) unless temp.nil?
+        end
+        return weights / words.count
+      end
+
     end
 
     module LocalInstanceMethods
@@ -160,6 +214,19 @@ module NlpArabic
 
       end
 
+      def add_rank_action (query, f = 1)
+        #words = query.split
+        words = self.class.get_root_words(query.split)
+        words.each do |w|
+          rank = RankWeight.where(:doc_id => self.id,:word => w).first
+          if rank.nil?
+            RankWeight.create(:doc_id => self.id, :word => w, :action_freq => f)
+          else
+            new_rank = rank.action_freq + f
+            rank.update_attributes(:action_freq => new_rank)
+          end
+        end
+      end
       #
       def delete_document
         doc = FreqTermInDoc.where(:doc_id => self.id)

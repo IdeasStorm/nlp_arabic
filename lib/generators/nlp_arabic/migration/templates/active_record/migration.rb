@@ -2,6 +2,7 @@ class ActsAsDocumentMigration < ActiveRecord::Migration
   #TODO put migration logic here
 
   def self.up
+
     create_table :terms do |t|
       t.string :word
       t.integer :doc_freq, :default => 0
@@ -19,14 +20,25 @@ class ActsAsDocumentMigration < ActiveRecord::Migration
     end
     add_index :freq_term_in_docs, [:doc_id, :word], :unique => true
 
-    NlpArabic::ActsAsDocument.registered_classes.each do |c|
-      add_column (c.downcase+"s").to_sym, :root_terms, :string, :default => ''
+    #NlpArabic::ActsAsDocument.registered_classes.each do |c|
+      #add_column (c.downcase+"s").to_sym, :root_terms, :string, :default => ''
+    #end
+
+    create_table :rank_weights do |t|
+      t.integer :doc_id
+      t.string :word
+      t.integer :action_freq, :default => 0
+
+      t.timestamps
     end
+    #add_index :rank_weights, [:doc_id,:word], :unique => true
+
   end
 
   def self.down
     drop_table :terms
     drop_table :freq_term_in_docs
+    drop_table :rank_weights
   end
 
 end
