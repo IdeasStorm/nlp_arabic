@@ -26,18 +26,18 @@ module NlpArabic
           end
         end
         #To save root of words in db for improve performance
-        #  	word.each do |w|
-        #  		temp = RootTerms.find(w)
-        #  		if temp.nil?
+        #   word.each do |w|
+        #     temp = RootTerms.find(w)
+        #     if temp.nil?
         # get word's root
         #r_w = get_root_term w
         #RootTerms.create(:word => w, :root => r_w)
-        #  			end
-        #  		elseif (!temp.root.nil?)
-        #  			r_w = temp.root
-        #  		end
-        #  		all_terms << r_w
-        #  	end #for word.each do |w|
+        #       end
+        #     elseif (!temp.root.nil?)
+        #       r_w = temp.root
+        #     end
+        #     all_terms << r_w
+        #   end #for word.each do |w|
         return all_terms
       end
 
@@ -107,10 +107,10 @@ module NlpArabic
             sum += (v1[t]*v2[t])
           end
         }
-
         l1 = lenght_vector(v1)
         l2 = lenght_vector(v2)
-        return sum / (l1 * l2)
+        res = sum / (l1 * l2)
+        return (((l1 * l2)) == 0) ? 0 : res 
       end
 
       # Similarity docs by query
@@ -171,7 +171,6 @@ module NlpArabic
           rank = rank_docs(terms_q,doc)
           res[doc] = sim + rank unless (sim+rank) == 0
         end
-
         return Hash[res.sort_by{|k, v| v}.reverse].first ((num ==0)? res.count : num)
       end
 
