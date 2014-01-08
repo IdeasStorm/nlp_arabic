@@ -18,3 +18,4 @@ gem "jquery-rails"
 
 gem 'sequel'
 gem 'zip'
+gem 'sqlite3'

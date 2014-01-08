@@ -21,7 +21,7 @@ class ArabicWordnet
     words = Array.new
     result = Array.new
 
-    db = Sequel.sqlite("#{Rails.root}/db/ArabicWordnet.sqlite")
+    db = Sequel.sqlite("#{Rails.root}/db/ArabicWordNet.sqlite")
 
     # If the input word is a root
     if (root)

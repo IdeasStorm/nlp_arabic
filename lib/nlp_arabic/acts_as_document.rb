@@ -117,7 +117,7 @@ module NlpArabic
       def similarity (query,num=0,synonyms=true,docs=nil)
         sims = {}
         syn_hash = {}
-        terms_q = self.get_root_words(query.split) #return array
+        terms_q = self.get_root_words(query.split)
         if synonyms
           terms_q.each do |t|
             syns = ArabicStemmer.get_instance.get_synonyms(t)
@@ -184,10 +184,6 @@ module NlpArabic
 #      end
 
       def save_tf (hash_freq)
-
-        puts "**************************************************************"
-        puts hash_freq
-
         all_words = FreqTermInDoc.where(:doc_id => self.id)
         
         hash_freq.each_pair {| term, freq |
@@ -200,8 +196,6 @@ module NlpArabic
               temp.update_attributes(:freq => freq)
             end
           else
-            puts "------------------------------------------------------------------"
-            puts freq
             FreqTermInDoc.create(:doc_id => self.id, :word => term, :freq => freq.to_f)
             if word.nil?
               Term.create(:word => term, :doc_freq => 1)
