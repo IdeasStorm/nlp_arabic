@@ -330,19 +330,20 @@ class ArabicStemmer
       return { :result => new_word, :status => :stop_word, :pure_word => new_word}
     else
       stem_result = stem_word(new_word)
+
       if (stem_result[1] != :root)
         @last_word = stem_result[0]
         @last_pattern_id = -1
       elsif @last_pattern_id == nil
         @last_word = stem_result[0]
       end
-
       #return [stem_result, @last_pattern_id, @last_word].flatten
       return {
         :result => stem_result[0],
         :status => stem_result[1],
         :pattern => @last_pattern_id,
-        :pure_word  => @last_word
+        #:pure_word  => @last_word
+        :pure_word  => stem_result[0]
       }
     end
   end
