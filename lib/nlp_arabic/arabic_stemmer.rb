@@ -352,12 +352,35 @@ class ArabicStemmer
     word.tr @dicts['diacritics'].join(''), ''
   end
 
+  def remove_triples(word)
+    word += ' '
+    count = 1
+    old_ch = ''
+    uniq_word = ''
+    word.each_char do |ch|
+      if old_ch == ch
+        count+=1
+      elsif old_ch != ch
+        uniq_word += old_ch * count if count < 3
+        uniq_word += old_ch if count >= 3
+        count = 1
+      end
+      old_ch = ch
+    end
+    return uniq_word
+  end
+
   def remove_nonletter(word)
     #TODO optimize this & remove other non-letter
     new_word = word.clone
     @dicts['punctuation'].each do |c|
       new_word.delete! c
     end
+    new_word.gsub!(/\d+/, '')
+    new_word.gsub!('ـ', '')
+    
+    #scan for duplicated words
+    new_word = remove_triples(new_word)
     return new_word
   end
 
