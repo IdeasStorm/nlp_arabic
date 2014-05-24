@@ -1,3 +1,4 @@
+#encoding: utf-8
 module Enumerable
   def divide_by
     result = Hash.new
